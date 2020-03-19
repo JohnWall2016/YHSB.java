@@ -37,6 +37,14 @@ public class HttpHeader implements Iterable<Tuple<String, String>> {
         }
     }
 
+    public List<String> remove(String name) {
+        return header.remove(name);
+    }
+
+    public void clear() {
+        header.clear();
+    }
+
     @Override
     public Iterator<Tuple<String, String>> iterator() {
         return header.entrySet().stream().flatMap(e -> {

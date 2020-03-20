@@ -54,19 +54,22 @@ public class Session extends HttpSocket {
         write(request.getBytes());
     }
 
-    public void sendService(Request request) {
-        var service = new JsonService<>(request).setLoginName(userID).setPassword(password);
-        request(service.toString());
-    }
-
     public String toService(Request request) {
         var service = new JsonService<>(request).setLoginName(userID).setPassword(password);
         return service.toString();
     }
 
-    public void sendService(String id) {
+    public void sendService(Request request) {
+        request(toService(request));
+    }
+
+    public String toService(String id) {
         var service = JsonService.withoutParams(id).setLoginName(userID).setPassword(password);
-        request(service.toString());
+        return service.toString();
+    }
+
+    public void sendService(String id) {
+        request(toService(id));
     }
 
     public <T extends Data> Result<T> getResult(Class<T> datasType) {

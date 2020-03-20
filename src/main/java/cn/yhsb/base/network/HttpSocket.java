@@ -44,6 +44,10 @@ public class HttpSocket implements AutoCloseable {
         output = socket.getOutputStream();
     }
 
+    public HttpSocket(String host, int port) throws UnknownHostException, IOException {
+        this(host, port, "UTF-8");
+    }
+
     @Override
     public void close() throws Exception {
         if (output != null) {
@@ -106,10 +110,18 @@ public class HttpSocket implements AutoCloseable {
                 break;
             var i = line.indexOf(':');
             if (i > 0) {
-                header.add(line.substring(0, i), line.substring(i));
+                header.add(line.substring(0, i).trim(), line.substring(i+1).trim());
             }
         }
         return header;
+    }
+
+    void readToData(int len, InputStream input, OutputStream data) throws IOException {
+        var b = new byte[len];
+        var rlen = input.readNBytes(b, 0, len);
+        if (rlen != len)
+            throw new IllegalStateException("Length of data is shorter than expected");
+        data.write(b);
     }
 
     public String readBody(HttpHeader header) throws IOException {
@@ -123,21 +135,13 @@ public class HttpSocket implements AutoCloseable {
                         readLine();
                         break;
                     }
-                    var b = new byte[len];
-                    var rlen = input.readNBytes(b, 0, len);
-                    if (rlen != len)
-                        throw new IllegalStateException("Length of data is shorter than expected");
-                    data.write(b, 0, rlen);
+                    readToData(len, input, data);
                     readLine();
                 }
             } else if (header.containsKey("Content-Length")) {
                 var len = Integer.parseInt(header.get("Content-Length").get(0), 10);
                 if (len > 0) {
-                    var b = new byte[len];
-                    var rlen = input.readNBytes(b, 0, len);
-                    if (rlen != len)
-                        throw new IllegalStateException("Length of data is shorter thanexpected");
-                    data.write(b, 0, rlen);
+                    readToData(len, input, data);
                 }
             } else {
                 throw new UnsupportedOperationException("unsupported transfer mode");
@@ -150,8 +154,8 @@ public class HttpSocket implements AutoCloseable {
         return readBody(null);
     }
 
-    public String getHttp(String path, String charset) throws UnsupportedEncodingException, IOException {
-        var request = new HttpRequest(path, "GET", null, charset);
+    public String getHttp(String path) throws UnsupportedEncodingException, IOException {
+        var request = new HttpRequest(path, "GET");
         request.addHeader("Host", getUrl())
             .addHeader("Connection", "keep-alive")
             .addHeader("Cache-Control", "max-age=0")

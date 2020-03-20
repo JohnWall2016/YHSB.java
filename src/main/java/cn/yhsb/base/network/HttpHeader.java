@@ -5,13 +5,13 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
-import cn.yhsb.base.util.Tuple;
-
-public class HttpHeader implements Iterable<Tuple<String, String>> {
+public class HttpHeader implements Iterable<Entry<String, String>> {
     final private Map<String, List<String>> header = new HashMap<String, List<String>>();
 
     public List<String> get(String key) {
+        key = key.toLowerCase();
         if (header.containsKey(key)) {
             return header.get(key);
         }
@@ -28,16 +28,16 @@ public class HttpHeader implements Iterable<Tuple<String, String>> {
 
     public void addAll(HttpHeader header) {
         for (var entry: header) {
-            add(entry.first, entry.second);
+            add(entry.getKey(), entry.getValue());
         }
     }
 
     public boolean containsKey(String name) {
-        return header.containsKey(name);
+        return header.containsKey(name.toLowerCase());
     }
 
     public List<String> remove(String name) {
-        return header.remove(name);
+        return header.remove(name.toLowerCase());
     }
 
     public void clear() {
@@ -45,10 +45,10 @@ public class HttpHeader implements Iterable<Tuple<String, String>> {
     }
 
     @Override
-    public Iterator<Tuple<String, String>> iterator() {
+    public Iterator<Entry<String, String>> iterator() {
         return header.entrySet().stream().flatMap(e -> {
             var key = e.getKey();
-            return e.getValue().stream().map(v -> new Tuple<>(key, v));
+            return e.getValue().stream().map(v -> Map.entry(key, v));
         }).iterator();
     }
 }

@@ -10,21 +10,25 @@ public class HttpRequest {
 
     final private String path;
     final private String method;
-    final private String charset;
+    
+    private String charset;
 
-    public HttpRequest(String path, String method, HttpHeader header, String charset) {
+    public HttpRequest(String path, String method) {
         this.path = path;
         this.method = method;
-        if (header != null)
-            this.header.addAll(header);
-        if (charset != null)
-            this.charset = charset;
-        else
-            this.charset = "UTF-8";
+        this.charset = "UTF-8";
     }
 
-    public static HttpRequest createGetRequest(String path) {
-        return new HttpRequest(path, "GET", null, null);
+    public void addHeader(HttpHeader header) {
+        header.addAll(header);
+    }
+
+    public String getCharset() {
+        return charset;
+    }
+
+    public void setCharset(String charset) {
+        this.charset = charset;
     }
 
     public HttpRequest addHeader(String name, String value) {
@@ -42,7 +46,7 @@ public class HttpRequest {
         buffer.write((method + " " + path + " HTTP/1.1\r\n").getBytes(charset));
 
         for (var entry: header) {
-            buffer.write((entry.first + ": " + entry.second + "\r\n").getBytes(charset));
+            buffer.write((entry.getKey() + ": " + entry.getValue() + "\r\n").getBytes(charset));
         }
 
         if (body.size() > 0) {

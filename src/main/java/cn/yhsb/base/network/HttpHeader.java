@@ -1,5 +1,6 @@
 package cn.yhsb.base.network;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -11,30 +12,28 @@ public class HttpHeader implements Iterable<Tuple<String, String>> {
     final private Map<String, List<String>> header = new HashMap<String, List<String>>();
 
     public List<String> get(String key) {
-        return header.get(key);
-    }
-
-    public void put(String key, List<String> value) {
-        header.put(key, value);
-    }
-
-    public boolean containsKey(String key) {
-        return header.containsKey(key);
+        if (header.containsKey(key)) {
+            return header.get(key);
+        }
+        return List.of();
     }
 
     public void add(String name, String value) {
         var key = name.toLowerCase();
         if (!header.containsKey(key)) {
-            header.put(key, List.of(value));
-        } else {
-            header.get(key).add(value);
+            header.put(key, new ArrayList<>());
+        }
+        header.get(key).add(value);
+    }
+
+    public void addAll(HttpHeader header) {
+        for (var entry: header) {
+            add(entry.first, entry.second);
         }
     }
 
-    public void add(HttpHeader header) {
-        for (var entry : header) {
-            add(entry.first, entry.second);
-        }
+    public boolean containsKey(String name) {
+        return header.containsKey(name);
     }
 
     public List<String> remove(String name) {

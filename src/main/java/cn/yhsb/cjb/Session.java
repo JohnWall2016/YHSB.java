@@ -16,7 +16,7 @@ import cn.yhsb.cjb.service.Result;
 public class Session extends HttpSocket {
     private String userID;
     private String password;
-    private HashMap<String, String> cookies;
+    private HashMap<String, String> cookies = new HashMap<>();
 
     public Session(String host, int port, String userID, String password) {
         super(host, port);

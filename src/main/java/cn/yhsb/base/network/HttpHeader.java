@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 public class HttpHeader implements Iterable<Entry<String, String>> {
-    final private Map<String, List<String>> header = new HashMap<String, List<String>>();
+    final private Map<String, List<String>> header = new HashMap<>();
 
     public List<String> get(String key) {
         key = key.toLowerCase();

@@ -1,8 +1,6 @@
 package cn.yhsb.base.network;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 
 public class HttpRequest {
     final private HttpHeader header = new HttpHeader();
@@ -10,7 +8,7 @@ public class HttpRequest {
 
     final private String path;
     final private String method;
-    
+
     private String charset;
 
     public HttpRequest(String path, String method) {
@@ -36,27 +34,35 @@ public class HttpRequest {
         return this;
     }
 
-    public HttpRequest addBody(String content) throws UnsupportedEncodingException, IOException {
-        body.write(content.getBytes(charset));
+    public HttpRequest addBody(String content) {
+        try {
+            body.write(content.getBytes(charset));
+        } catch (Exception e) {
+            throw new HttpException(e);
+        }
         return this;
     }
 
-    public byte[] getBytes() throws UnsupportedEncodingException, IOException {
+    public byte[] getBytes() {
         var buffer = new ByteArrayOutputStream(512);
-        buffer.write((method + " " + path + " HTTP/1.1\r\n").getBytes(charset));
+        try {
+            buffer.write((method + " " + path + " HTTP/1.1\r\n").getBytes(charset));
 
-        for (var entry: header) {
-            buffer.write((entry.getKey() + ": " + entry.getValue() + "\r\n").getBytes(charset));
-        }
+            for (var entry : header) {
+                buffer.write((entry.getKey() + ": " + entry.getValue() + "\r\n").getBytes(charset));
+            }
 
-        if (body.size() > 0) {
-            buffer.write(("content-length: " + body.size() + "\r\n").getBytes(charset));
-        }
+            if (body.size() > 0) {
+                buffer.write(("content-length: " + body.size() + "\r\n").getBytes(charset));
+            }
 
-        buffer.write("\r\n".getBytes(charset));
+            buffer.write("\r\n".getBytes(charset));
 
-        if (body.size() > 0) {
-            body.writeTo(buffer);
+            if (body.size() > 0) {
+                body.writeTo(buffer);
+            }
+        } catch (Exception e) {
+            throw new HttpException(e);
         }
 
         return buffer.toByteArray();

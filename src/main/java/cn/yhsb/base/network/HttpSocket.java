@@ -113,7 +113,8 @@ public class HttpSocket implements AutoCloseable {
     }
 
     public String readBody(HttpHeader header) throws IOException {
-        if (header == null) header = readHeader();
+        if (header == null)
+            header = readHeader();
         try (var data = new ByteArrayOutputStream(512)) {
             if (header.get("Transfer-Encoding").contains("chunked")) {
                 while (true) {
@@ -133,7 +134,7 @@ public class HttpSocket implements AutoCloseable {
                 var len = Integer.parseInt(header.get("Content-Length").get(0), 10);
                 if (len > 0) {
                     var b = new byte[len];
-                    var rlen = input.readNBytes(b, 0,len);
+                    var rlen = input.readNBytes(b, 0, len);
                     if (rlen != len)
                         throw new IllegalStateException("Length of data is shorter thanexpected");
                     data.write(b, 0, rlen);
@@ -156,8 +157,9 @@ public class HttpSocket implements AutoCloseable {
             .addHeader("Cache-Control", "max-age=0")
             .addHeader("Upgrade-Insecure-Requests", "1")
             .addHeader("User-Agent",
-            "Mozilla/5.0 (Windows NT 6.1; Win64; x64)AppleWebKit/537.36 (KHTML, like Gecko)Chrome/71.0.3578.98 Safari/537.36")
-            .addHeader("Accept", "text/html,applicationxhtml+xml,application/xml;q=0.9,image/webpimage/apng,*/*;q=0.8")
+                       "Mozilla/5.0 (Windows NT 6.1; Win64; x64)AppleWebKit/537.36 (KHTML, like Gecko)Chrome/71.0.3578.98 Safari/537.36")
+            .addHeader("Accept",
+                       "text/html,applicationxhtml+xml,application/xml;q=0.9,image/webpimage/apng,*/*;q=0.8")
             .addHeader("Accept-Encoding", "gzip,deflate")
             .addHeader("Accept-Language", "zh-CN,zh;q=09");
         write(request.getBytes());

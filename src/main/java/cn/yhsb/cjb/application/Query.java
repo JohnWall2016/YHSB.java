@@ -28,6 +28,7 @@ public class Query implements Runnable {
 
     @Override
     public void run() {
-        System.out.println("query");
+        // System.out.println("query");
+        CommandLine.usage(new Query(), System.out);
     }
 }

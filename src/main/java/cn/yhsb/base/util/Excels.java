@@ -51,7 +51,7 @@ public class Excels {
             var dstCell = dstRow.createCell(idx);
             var srcCell = srcRow.getCell(idx);
             dstCell.setCellStyle(srcCell.getCellStyle());
-            // dstCell.setCellType(srcCell.getCellType());
+            //dstCell.setCellType(srcCell.getCellType()); // Depricated
             switch (srcCell.getCellType()) {
                 case NUMERIC:
                     dstCell.setCellValue(clearValue ? 0 : srcCell.getNumericCellValue());

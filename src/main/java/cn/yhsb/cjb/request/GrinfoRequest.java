@@ -26,10 +26,7 @@ public class GrinfoRequest extends PageRequest {
 
     String aac006str = "", aac006end = "";
     String aac066 = "", aae030str = "";
-    String aae030end = "", aae476 = "";
-
-    @SerializedName("aac003")
-    String name = "";
+    String aae030end = "", aae476 = "", aac058 = "";
 
     /** 身份证号码 */
     @SerializedName("aac002")
@@ -37,12 +34,15 @@ public class GrinfoRequest extends PageRequest {
 
     String aae478 = "";
 
+    @SerializedName("aac003")
+    String name = "";
+
     public GrinfoRequest(String idcard) {
         super("zhcxgrinfoQuery");
         this.idcard = idcard;
     }
 
-    public static class Grinfo extends Data {
+    public static class Grinfo extends Data implements Jbzt {
         /** 个人编号 */
         @SerializedName("aac001")
         int grbh;
@@ -140,10 +140,6 @@ public class GrinfoRequest extends PageRequest {
 
         public String getCsmc() {
             return csmc;
-        }
-
-        public String getJbztCN() {
-            return Configs.getJbztCN(this.jfzt, this.cbzt);
         }
 
         /**

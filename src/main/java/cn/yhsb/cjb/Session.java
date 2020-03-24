@@ -46,6 +46,7 @@ public class Session extends HttpSocket {
     }
 
     HttpRequest buildRequest(String content) {
+        // System.out.println(content);
         var request = createRequest();
         request.addBody(content);
         return request;

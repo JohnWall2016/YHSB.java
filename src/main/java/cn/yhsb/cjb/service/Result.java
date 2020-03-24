@@ -47,6 +47,13 @@ public class Result<T extends Data> extends Data {
         return datas;
     }
 
+    public boolean empty() {
+        if (datas == null || datas.size() <= 0)
+            return true;
+        else
+            return false;
+    }
+
     public static <T extends Data> Result<T> fromJson(String json, Class<T> datasType) {
         var type = TypeToken.getParameterized(Result.class, datasType).getType();
         return new Gson().<Result<T>>fromJson(json, type);

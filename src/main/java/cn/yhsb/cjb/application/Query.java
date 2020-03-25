@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import cn.yhsb.base.util.CommandWithHelp;
 import cn.yhsb.cjb.Session;
+import cn.yhsb.cjb.request.CbxxRequest;
 import cn.yhsb.cjb.request.GrinfoRequest;
 import cn.yhsb.cjb.request.JfxxRequest.Jfxx;
 import cn.yhsb.cjb.service.Result;
@@ -17,7 +18,7 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 
-@Command(description = "城居保信息查询程序", subcommands = { Query.GrinfoQuery.class, Query.JfxxQuery.class })
+@Command(description = "城居保信息查询程序", subcommands = {Query.GrinfoQuery.class, Query.JfxxQuery.class})
 public class Query extends CommandWithHelp {
     public static void main(String[] args) {
         new CommandLine(new Query()).execute(args);
@@ -39,8 +40,8 @@ public class Query extends CommandWithHelp {
                             System.out.println(idcard + " 未在我区参保");
                         } else {
                             var info = result.getDatas().get(0);
-                            System.out.format("%s %s %s %s %s\n", info.getIdcard(), info.getName(), info.getJbztCN(),
-                                    info.getDwmc(), info.getCzmc());
+                            System.out.format("%s %s %s %s %s\n", info.getIdcard(), info.getName(),
+                                    info.getJbState(), info.getDwmc(), info.getCzmc());
                         }
                     }
                 });
@@ -50,7 +51,7 @@ public class Query extends CommandWithHelp {
 
     @Command(name = "jfxx", description = "缴费信息查询")
     public static class JfxxQuery extends CommandWithHelp {
-        @Option(names = { "-e", "--export" }, description = "导出信息表")
+        @Option(names = {"-e", "--export"}, description = "导出信息表")
         boolean export = false;
 
         @Parameters(description = "身份证号码")
@@ -122,7 +123,8 @@ public class Query extends CommandWithHelp {
                             record.zfdj = record.zfdj.add(data.amount);
                             break;
                         default:
-                            System.out.println("未知缴费类型" + data.item.getValue() + ", 金额" + data.amount);
+                            System.out.println(
+                                    "未知缴费类型" + data.item.getValue() + ", 金额" + data.amount);
                             break;
                     }
                     record.sbjg.add(data.agency != null ? data.agency : "");
@@ -132,7 +134,8 @@ public class Query extends CommandWithHelp {
         }
 
         List<JfxxRecord> orderAndSum(HashMap<Integer, JfxxRecord> records) {
-            var results = records.values().stream().sorted((e1, e2) -> Integer.compare(e1.year, e2.year));
+            var results =
+                    records.values().stream().sorted((e1, e2) -> Integer.compare(e1.year, e2.year));
             var total = new JfxxTotalRecord();
             results.forEach(r -> {
                 total.grjf = total.grjf.add(r.grjf);
@@ -142,11 +145,21 @@ public class Query extends CommandWithHelp {
                 total.zfdj = total.zfdj.add(r.zfdj);
                 total.jtbz = total.jtbz.add(r.jtbz);
             });
-            total.total = total.total.add(total.grjf).add(total.sjbt).add(total.sqbt).add(total.xjbt).add(total.zfdj)
-                    .add(total.jtbz);
+            total.total = total.total.add(total.grjf).add(total.sjbt).add(total.sqbt)
+                    .add(total.xjbt).add(total.zfdj).add(total.jtbz);
             var list = results.collect(Collectors.toCollection(ArrayList<JfxxRecord>::new));
             list.add(total);
             return list;
+        }
+
+        void printInfo(CbxxRequest info)
+        {
+            /*WriteLine("个人信息:");
+            WriteLine(
+                $"{info.name} {info.idcard} {info.JBState} " +
+                $"{info.JBClass} {info.agency} {info.czName} " +
+                $"{info.dealDate}\n"
+            );*/
         }
 
         @Override

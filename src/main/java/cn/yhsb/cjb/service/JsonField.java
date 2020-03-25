@@ -15,16 +15,26 @@ public class JsonField {
         return value;
     }
 
+    public String getName() {
+        return "未知值: " + value;
+    }
+
+    @Override
+    public String toString() {
+        return getName();
+    }
+
     public static class Adapter implements JsonAdapter<JsonField> {
 
         @Override
-        public JsonElement serialize(JsonField src, Type typeOfSrc, JsonSerializationContext context) {
+        public JsonElement serialize(JsonField src, Type typeOfSrc,
+                JsonSerializationContext context) {
             return new JsonPrimitive(src.value);
         }
 
         @Override
-        public JsonField deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
-                throws JsonParseException {
+        public JsonField deserialize(JsonElement json, Type typeOfT,
+                JsonDeserializationContext context) throws JsonParseException {
             var field = new JsonField();
             field.value = json.getAsString();
             return field;

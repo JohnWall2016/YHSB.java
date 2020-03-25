@@ -1,7 +1,9 @@
 package cn.yhsb.cjb.request;
 
 import com.google.gson.annotations.SerializedName;
-import cn.yhsb.cjb.Configs;
+import cn.yhsb.cjb.request.States.CbState;
+import cn.yhsb.cjb.request.States.JbState;
+import cn.yhsb.cjb.request.States.JfState;
 import cn.yhsb.cjb.service.Data;
 import cn.yhsb.cjb.service.PageRequest;
 
@@ -42,7 +44,7 @@ public class GrinfoRequest extends PageRequest {
         this.idcard = idcard;
     }
 
-    public static class Grinfo extends Data implements Jbzt {
+    public static class Grinfo extends Data implements JbState {
         /** 个人编号 */
         @SerializedName("aac001")
         int grbh;
@@ -57,17 +59,17 @@ public class GrinfoRequest extends PageRequest {
         @SerializedName("aac006")
         int birthday;
 
-        /** 参保状态: "1"-正常参保 "2"-暂停参保 "4"-终止参保 "0"-未参保 */
+        /** 参保状态 */
         @SerializedName("aac008")
-        String cbzt;
+        CbState cbState;
 
         /** 户口所在地 */
         @SerializedName("aac010")
         String hkszd;
 
-        /** 缴费状态: "1"-参保缴费 "2"-暂停缴费 "3"-终止缴费 */
+        /** 缴费状态 */
         @SerializedName("aac031")
-        String jfzt;
+        JfState jfState;
 
         @SerializedName("aae005")
         String phone;
@@ -106,16 +108,16 @@ public class GrinfoRequest extends PageRequest {
             return birthday;
         }
 
-        public String getCbzt() {
-            return cbzt;
+        public CbState getCbState() {
+            return cbState;
         }
 
         public String getHkszd() {
             return hkszd;
         }
 
-        public String getJfzt() {
-            return jfzt;
+        public JfState getJfState() {
+            return jfState;
         }
 
         public String getPhone() {
@@ -143,10 +145,10 @@ public class GrinfoRequest extends PageRequest {
         }
 
         /**
-         * @return 所属单位名称
+         * 所属单位名称
          */
         public String getDwmc() {
-            return Configs.getXzhqCN(this.czqh.substring(0, 8));
+            return Regions.xzqhMap.get(czqh.substring(0, 8));
         }
     }
 }

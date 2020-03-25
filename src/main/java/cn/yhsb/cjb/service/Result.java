@@ -2,7 +2,6 @@ package cn.yhsb.cjb.service;
 
 import java.util.ArrayList;
 
-import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 public class Result<T extends Data> extends Data {
@@ -56,6 +55,6 @@ public class Result<T extends Data> extends Data {
 
     public static <T extends Data> Result<T> fromJson(String json, Class<T> datasType) {
         var type = TypeToken.getParameterized(Result.class, datasType).getType();
-        return new Gson().<Result<T>>fromJson(json, type);
+        return getGson().fromJson(json, type);
     }
 }

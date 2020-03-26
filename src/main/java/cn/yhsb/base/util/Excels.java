@@ -9,6 +9,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.util.CellRangeAddressList;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class Excels {
@@ -87,6 +88,18 @@ public class Excels {
             default:
                 break;
             }
+        }
+        var merged = new CellRangeAddressList();
+        for (var i = 0; i < sheet.getNumMergedRegions(); i++) {
+            var address = sheet.getMergedRegion(i);
+            if (srcRowIdx == address.getFirstRow()
+                    && srcRowIdx == address.getLastRow()) {
+                merged.addCellRangeAddress(dstRowIdx, address.getFirstColumn(),
+                        dstRowIdx, address.getLastColumn());
+            }
+        }
+        for (var region: merged.getCellRangeAddresses()) {
+            sheet.addMergedRegion(region);
         }
         return dstRow;
     }

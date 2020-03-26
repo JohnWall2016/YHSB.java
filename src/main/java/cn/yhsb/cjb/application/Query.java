@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import cn.yhsb.base.util.CommandWithHelp;
 import cn.yhsb.base.util.Excels;
@@ -260,25 +259,29 @@ public class Query extends CommandWithHelp {
                     for (var r : records) {
                         var row = Excels.getOrCopyRowFrom(sheet, index++,
                                 copyIndex, true);
-                        row.getCell(0)
-                                .setCellValue(r instanceof JfxxTotalRecord ? ""
-                                        : String.valueOf(index - copyIndex));
-                        row.getCell(1).setCellValue(
-                                r instanceof JfxxTotalRecord ? "合计"
-                                        : String.valueOf(r.year));
+                        if (r instanceof JfxxTotalRecord) {
+                            row.getCell(0).setCellValue("");
+                            row.getCell(1).setCellValue("合计");
+                        } else {
+                            row.getCell(0).setCellValue(index - copyIndex);
+                            row.getCell(1).setCellValue(r.year);
+                        }
                         row.getCell(2).setCellValue(r.grjf.toString());
                         row.getCell(3).setCellValue(r.sjbt.toString());
                         row.getCell(4).setCellValue(r.sqbt.toString());
                         row.getCell(5).setCellValue(r.xjbt.toString());
                         row.getCell(6).setCellValue(r.zfdj.toString());
                         row.getCell(7).setCellValue(r.jtbz.toString());
-                        row.getCell(8).setCellValue(
-                                r instanceof JfxxTotalRecord ? "总计"
-                                        : String.join("|", r.sbjg));
-                        row.getCell(10)
-                                .setCellValue(r instanceof JfxxTotalRecord
-                                        ? ((JfxxTotalRecord) r).total.toString()
-                                        : String.join("|", r.hbrq));
+                        if (r instanceof JfxxTotalRecord) {
+                            row.getCell(8).setCellValue("总计");
+                            row.getCell(10).setCellValue(
+                                    ((JfxxTotalRecord) r).total.toString());
+                        } else {
+                            row.getCell(8)
+                                    .setCellValue(String.join("|", r.sbjg));
+                            row.getCell(10)
+                                    .setCellValue(String.join("|", r.hbrq));
+                        }
                     }
                 }
                 Excels.save(workbook, Paths

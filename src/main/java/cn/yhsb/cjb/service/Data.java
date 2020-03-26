@@ -11,7 +11,8 @@ public class Data {
 
     static {
         builder = new GsonBuilder().serializeNulls();
-        builder.registerTypeAdapter(JsonField.class, JsonField.Adapter.class);
+        // builder.registerTypeAdapter(JsonField.class, new JsonField.Adapter());
+        builder.registerTypeHierarchyAdapter(JsonField.class, new JsonField.Adapter());
         gson = builder.create();
     }
 
@@ -24,7 +25,13 @@ public class Data {
         return gson.toJson(this);
     }
 
-    public static <T> T fromJson(String json, Type type) {
-        return gson.fromJson(json, type);
+    @SuppressWarnings("unchecked")
+    public static <T> T fromJson(String json, Type typeOfT) {
+        return (T)gson.fromJson(json, typeOfT);
     }
+/*
+    public static <T> T fromJson(String json, Class<T> typeOfT) {
+        return gson.fromJson(json, typeOfT);
+    }
+*/
 }

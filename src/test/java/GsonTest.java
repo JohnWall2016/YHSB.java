@@ -1,6 +1,7 @@
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.ArrayList;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -9,9 +10,11 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
+import com.google.gson.reflect.TypeToken;
 
 import org.junit.Test;
 
+import cn.yhsb.cjb.service.Data;
 import cn.yhsb.cjb.service.JsonAdapter;
 import cn.yhsb.cjb.service.JsonField;
 
@@ -72,7 +75,7 @@ public class GsonTest {
         System.out.println(obj2.field.code);
     }
 
-    static class JField extends JsonField {
+    public static class JField extends JsonField {
         @Override
         public String toString() {
             if (value.equals("001")) return "ABC";
@@ -84,19 +87,75 @@ public class GsonTest {
         }
     }
 
-    static class JObject {
+    public static class JObject extends Data {
         JField field = new JField();
     }
 
     @Test
     public void testAdapter2() {
-        var gson = new GsonBuilder().serializeNulls()
-                .registerTypeAdapter(JsonField.class, new JsonField.Adapter()).create();
         var obj = new JObject();
         obj.field.setValue("001");
-        var json = gson.toJson(obj);
+        var json = Data.getGson().toJson(obj);
         System.out.println(json);
-        var obj2 = gson.fromJson(json, JObject.class);
+        var obj2 = Data.getGson().fromJson(json, JObject.class);
         System.out.println(obj2.field);
+    }
+
+    static class JWrapper<T extends Data> extends Data {
+        ArrayList<T> datas = new ArrayList<T>();
+    }
+
+    public static class CbState2 extends JsonField {
+        @Override
+        public String getName() {
+            switch (value) {
+                case "0":
+                    return "未参保";
+                case "1":
+                    return "正常参保";
+                case "2":
+                    return "暂停参保";
+                case "4":
+                    return "终止参保";
+                default:
+                    return "未知值: " + value;
+            }
+        }
+
+        public void setValue(String value) {
+            this.value = value;
+        }
+    }
+
+    public static class Cbxx2 {
+        // @SerializedName("aac008")
+        CbState2 cbState;
+    }
+
+    @Test
+    public void testAdapter3() {
+        var wrapper = new JWrapper<JObject>();
+        var obj = new JObject();
+        obj.field.setValue("001");
+        wrapper.datas.add(obj);
+        var json = Data.getGson().toJson(wrapper);
+        System.out.println(json);
+        
+        var type = TypeToken.getParameterized(JWrapper.class, JObject.class).getType();
+        var obj2 = Data.getGson().fromJson(json, type);
+        System.out.println(obj2.getClass());
+        System.out.println(obj2);
+
+        // json = "{\"aac008\":\"4\"}";
+        json = "{\"cbState\":\"4\"}";
+        var cbxx = new Cbxx2();
+        var cbState = new CbState2();
+        cbState.setValue("3");
+        cbxx.cbState = cbState;
+        json = Data.getGson().toJson(cbxx);
+        System.out.println(json);
+        json = "{\"cbState\":\"4\"}";
+        cbxx = Data.getGson().fromJson(json, Cbxx2.class);
+        System.out.println(cbxx.cbState);
     }
 }

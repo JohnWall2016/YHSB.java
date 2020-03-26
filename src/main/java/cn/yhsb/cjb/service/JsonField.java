@@ -35,9 +35,14 @@ public class JsonField {
         @Override
         public JsonField deserialize(JsonElement json, Type typeOfT,
                 JsonDeserializationContext context) throws JsonParseException {
-            var field = new JsonField();
-            field.value = json.getAsString();
-            return field;
+            try {
+                Class<?> clazz = (Class<?>) typeOfT;
+                JsonField field = (JsonField)clazz.getConstructor().newInstance();
+                field.value = json.getAsString();
+                return field;
+            } catch (Exception e) {
+                throw new JsonParseException(e);
+            }
         }
 
     }

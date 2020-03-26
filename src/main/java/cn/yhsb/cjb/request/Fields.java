@@ -5,7 +5,7 @@ import cn.yhsb.cjb.service.JsonField;
 /**
  * 居保各种状态
  */
-public class States {
+public class Fields {
 
     /**
      * 参保状态
@@ -88,6 +88,30 @@ public class States {
                     }
                 default:
                     return "未知类型人员: " + jfState + ", " + cbState;
+            }
+        }
+    }
+
+    public static class JbKind extends JsonField {
+        @Override
+        public String getName() {
+            switch (value) {
+                case "011":
+                    return "普通参保人员";
+                case "021":
+                    return "残一级";
+                case "022":
+                    return "残二级";
+                case "031":
+                    return "特困一级";
+                case "051":
+                    return "贫困人口一级";
+                case "061":
+                    return "低保对象一级";
+                case "062":
+                    return "低保对象二级";
+                default:
+                    return "未知身份类型: " + value;
             }
         }
     }

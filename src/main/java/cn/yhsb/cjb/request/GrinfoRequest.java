@@ -1,9 +1,9 @@
 package cn.yhsb.cjb.request;
 
 import com.google.gson.annotations.SerializedName;
-import cn.yhsb.cjb.request.States.CbState;
-import cn.yhsb.cjb.request.States.JbState;
-import cn.yhsb.cjb.request.States.JfState;
+import cn.yhsb.cjb.request.Fields.CbState;
+import cn.yhsb.cjb.request.Fields.JbState;
+import cn.yhsb.cjb.request.Fields.JfState;
 import cn.yhsb.cjb.service.Data;
 import cn.yhsb.cjb.service.PageRequest;
 

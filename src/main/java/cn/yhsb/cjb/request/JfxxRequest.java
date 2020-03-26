@@ -49,7 +49,7 @@ public class JfxxRequest extends PageRequest {
         public Type type;
 
         /** 缴费项目 */
-        public class Item extends JsonField {
+        public static class Item extends JsonField {
             @Override
             public String toString() {
                 switch (value) {
@@ -73,7 +73,7 @@ public class JfxxRequest extends PageRequest {
         public Item item;
 
         /** 缴费方式 */
-        public class Method extends JsonField {
+        public static class Method extends JsonField {
             @Override
             public String toString() {
                 switch (value) {

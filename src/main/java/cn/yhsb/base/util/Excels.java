@@ -52,38 +52,57 @@ public class Excels {
         }
     }
 
-    public static Row createRow(Sheet sheet, int dstRowIdx, int srcRowIdx,
-            boolean clearValue) {
-        var dstRow = sheet.createRow(dstRowIdx);
-        var srcRow = sheet.getRow(srcRowIdx);
-        dstRow.setHeight(srcRow.getHeight());
+    public static Row createRow(Sheet sheet, int targetRowIndex,
+            int sourceRowIndex, boolean clearValue) {
+        if (targetRowIndex == sourceRowIndex)
+            throw new ExcelException(
+                    "sourceIndex and targetIndex cannot be same");
+
+        var newRow = sheet.getRow(targetRowIndex);
+        var srcRow = sheet.getRow(sourceRowIndex);
+
+        if (newRow != null) {
+            sheet.shiftRows(targetRowIndex, sheet.getLastRowNum(), 1, true,
+                    false);
+        }
+
+        newRow = sheet.createRow(targetRowIndex);
+        newRow.setHeight(srcRow.getHeight());
+
         for (var idx = srcRow.getFirstCellNum(); idx < srcRow
                 .getPhysicalNumberOfCells(); idx++) {
-            var dstCell = dstRow.createCell(idx);
             var srcCell = srcRow.getCell(idx);
-            dstCell.setCellStyle(srcCell.getCellStyle());
-            // dstCell.setCellType(srcCell.getCellType()); // Depricated
+            if (srcCell == null) {
+                continue;
+            }
+
+            var newCell = newRow.createCell(idx);
+
+            newCell.setCellStyle(srcCell.getCellStyle());
+            newCell.setCellComment(srcCell.getCellComment());
+            newCell.setHyperlink(srcCell.getHyperlink());
+
             switch(srcCell.getCellType()) {
             case NUMERIC:
-                dstCell.setCellValue(
+                newCell.setCellValue(
                         clearValue ? 0 : srcCell.getNumericCellValue());
                 break;
             case STRING:
-                dstCell.setCellValue(
+                newCell.setCellValue(
                         clearValue ? "" : srcCell.getStringCellValue());
                 break;
             case FORMULA:
-                dstCell.setCellFormula(srcCell.getCellFormula());
+                newCell.setCellFormula(srcCell.getCellFormula());
                 break;
             case BLANK:
-                dstCell.setBlank();
+                newCell.setBlank();
                 break;
             case BOOLEAN:
-                dstCell.setCellValue(
+                newCell.setCellValue(
                         clearValue ? false : srcCell.getBooleanCellValue());
                 break;
             case ERROR:
-                dstCell.setCellErrorValue(srcCell.getErrorCellValue());
+                newCell.setCellErrorValue(srcCell.getErrorCellValue());
                 break;
             default:
                 break;
@@ -92,33 +111,34 @@ public class Excels {
         var merged = new CellRangeAddressList();
         for (var i = 0; i < sheet.getNumMergedRegions(); i++) {
             var address = sheet.getMergedRegion(i);
-            if (srcRowIdx == address.getFirstRow()
-                    && srcRowIdx == address.getLastRow()) {
-                merged.addCellRangeAddress(dstRowIdx, address.getFirstColumn(),
-                        dstRowIdx, address.getLastColumn());
+            if (sourceRowIndex == address.getFirstRow()
+                    && sourceRowIndex == address.getLastRow()) {
+                merged.addCellRangeAddress(targetRowIndex,
+                        address.getFirstColumn(), targetRowIndex,
+                        address.getLastColumn());
             }
         }
-        for (var region: merged.getCellRangeAddresses()) {
+        for (var region : merged.getCellRangeAddresses()) {
             sheet.addMergedRegion(region);
         }
-        return dstRow;
+        return newRow;
     }
 
-    public static Row getOrCopyRowFrom(Sheet sheet, int dstRowIdx,
-            int srcRowIdx, boolean clearValue) {
-        if (dstRowIdx <= srcRowIdx)
-            return sheet.getRow(srcRowIdx);
+    public static Row getOrCopyRowFrom(Sheet sheet, int targetRowIndex,
+            int sourceRowIndex, boolean clearValue) {
+        if (targetRowIndex == sourceRowIndex)
+            return sheet.getRow(sourceRowIndex);
         else {
-            if (sheet.getLastRowNum() >= dstRowIdx)
-                sheet.shiftRows(dstRowIdx, sheet.getLastRowNum(), 1, true,
+            if (sheet.getLastRowNum() >= targetRowIndex)
+                sheet.shiftRows(targetRowIndex, sheet.getLastRowNum(), 1, true,
                         false);
-            return createRow(sheet, dstRowIdx, srcRowIdx, clearValue);
+            return createRow(sheet, targetRowIndex, sourceRowIndex, clearValue);
         }
     }
 
-    public static Row getOrCopyRowFrom(Sheet sheet, int dstRowIdx,
-            int srcRowIdx) {
-        return getOrCopyRowFrom(sheet, dstRowIdx, srcRowIdx, false);
+    public static Row getOrCopyRowFrom(Sheet sheet, int targetRowIndex,
+            int sourceRowIndex) {
+        return getOrCopyRowFrom(sheet, targetRowIndex, sourceRowIndex, false);
     }
 
     public static void copyRowsFrom(Sheet sheet, int start, int count,

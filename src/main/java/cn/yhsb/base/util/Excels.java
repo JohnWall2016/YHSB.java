@@ -12,6 +12,10 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddressList;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import cn.yhsb.base.exception.ArgumentException;
+import cn.yhsb.base.exception.OperationException;
+import cn.yhsb.base.exception.UnsupportedException;
+
 public class Excels {
 
     public enum Type {
@@ -35,9 +39,9 @@ public class Excels {
             case AUTO:
             }
         } catch (IOException e) {
-            throw new ExcelException(e);
+            throw new OperationException(e);
         }
-        throw new UnsupportedOperationException("Unknown excel type");
+        throw new UnsupportedException("Unknown excel type");
     }
 
     public static Workbook load(String fileName) {
@@ -48,14 +52,14 @@ public class Excels {
         try (var out = Files.newOutputStream(Paths.get(fileName))) {
             wb.write(out);
         } catch (IOException e) {
-            throw new ExcelException(e);
+            throw new OperationException(e);
         }
     }
 
     public static Row createRow(Sheet sheet, int targetRowIndex,
             int sourceRowIndex, boolean clearValue) {
         if (targetRowIndex == sourceRowIndex)
-            throw new ExcelException(
+            throw new ArgumentException(
                     "sourceIndex and targetIndex cannot be same");
 
         var newRow = sheet.getRow(targetRowIndex);

@@ -2,6 +2,8 @@ package cn.yhsb.base.network;
 
 import java.io.ByteArrayOutputStream;
 
+import cn.yhsb.base.exception.OperationException;
+
 public class HttpRequest {
     final private HttpHeader header = new HttpHeader();
     final private ByteArrayOutputStream body = new ByteArrayOutputStream(512);
@@ -38,7 +40,7 @@ public class HttpRequest {
         try {
             body.write(content.getBytes(charset));
         } catch (Exception e) {
-            throw new HttpException(e);
+            throw new OperationException(e);
         }
         return this;
     }
@@ -62,7 +64,7 @@ public class HttpRequest {
                 body.writeTo(buffer);
             }
         } catch (Exception e) {
-            throw new HttpException(e);
+            throw new OperationException(e);
         }
 
         return buffer.toByteArray();

@@ -4,7 +4,8 @@ import java.util.HashMap;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import cn.yhsb.base.network.HttpException;
+import cn.yhsb.base.exception.BaseException;
+import cn.yhsb.base.exception.OperationException;
 import cn.yhsb.base.network.HttpRequest;
 import cn.yhsb.base.network.HttpSocket;
 import cn.yhsb.cjb.request.SysLogin;
@@ -151,10 +152,10 @@ public class Session extends HttpSocket {
             session.login();
             call.call(session);
             session.logout();
-        } catch (HttpException e) {
+        } catch (BaseException e) {
             throw e;
         } catch (Exception e) {
-            throw new SessionException(e);
+            throw new OperationException(e);
         }
     }
 }

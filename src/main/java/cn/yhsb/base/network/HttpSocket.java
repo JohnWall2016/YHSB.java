@@ -7,6 +7,11 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.Socket;
 
+import cn.yhsb.base.exception.BaseException;
+import cn.yhsb.base.exception.OperationException;
+import cn.yhsb.base.exception.StateException;
+import cn.yhsb.base.exception.UnsupportedException;
+
 public class HttpSocket implements AutoCloseable {
     private String host;
 
@@ -43,7 +48,7 @@ public class HttpSocket implements AutoCloseable {
             input = socket.getInputStream();
             output = socket.getOutputStream();
         } catch (Exception e) {
-            throw new HttpException(e);
+            throw new OperationException(e);
         }
     }
 
@@ -67,7 +72,7 @@ public class HttpSocket implements AutoCloseable {
                 socket = null;
             }
         } catch (Exception e) {
-            throw new HttpException(e);
+            throw new OperationException(e);
         }
     }
 
@@ -75,23 +80,23 @@ public class HttpSocket implements AutoCloseable {
         try {
             write(content.getBytes(charset));
         } catch (UnsupportedEncodingException e) {
-            throw new HttpException(e);
+            throw new OperationException(e);
         }
     }
 
     public void write(byte[] bytes) {
         if (output == null)
-            throw new HttpException("The output stream is closed");
+            throw new StateException("The output stream is closed");
         try {
             output.write(bytes);
         } catch (Exception e) {
-            throw new HttpException(e);
+            throw new OperationException(e);
         }
     }
 
     public String readLine() {
         if (input == null)
-            throw new HttpException("The input stream is closed");
+            throw new StateException("The input stream is closed");
         try (var data = new ByteArrayOutputStream(512)) {
             int c = 0, n = 0;
             while (true) {
@@ -112,10 +117,10 @@ public class HttpSocket implements AutoCloseable {
                 } else
                     data.write(c);
             }
-        } catch (HttpException e) {
+        } catch (BaseException e) {
             throw e;
         } catch (Exception e) {
-            throw new HttpException(e);
+            throw new OperationException(e);
         }
     }
 
@@ -165,14 +170,14 @@ public class HttpSocket implements AutoCloseable {
                     readToData(len, input, data);
                 }
             } else {
-                throw new UnsupportedOperationException(
+                throw new UnsupportedException(
                         "unsupported transfer mode");
             }
             return data.toString(charset);
-        } catch (HttpException e) {
+        } catch (BaseException e) {
             throw e;
         } catch (Exception e) {
-            throw new HttpException(e);
+            throw new OperationException(e);
         }
     }
 

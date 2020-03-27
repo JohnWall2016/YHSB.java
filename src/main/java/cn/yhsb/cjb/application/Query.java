@@ -9,7 +9,7 @@ import java.util.List;
 
 import cn.yhsb.base.util.CommandWithHelp;
 import cn.yhsb.base.util.Excels;
-import cn.yhsb.cjb.Session;
+import cn.yhsb.cjb.service.Session;
 import cn.yhsb.cjb.request.CbxxRequest;
 import cn.yhsb.cjb.request.GrinfoRequest;
 import cn.yhsb.cjb.request.JfxxRequest;
@@ -47,7 +47,7 @@ public class Query extends CommandWithHelp {
                             println(idcard + " 未在我区参保");
                         } else {
                             var info = result.getData().get(0);
-                            format("%s %s %s %s %s\n", info.getIdcard(),
+                            printf("%s %s %s %s %s\n", info.getIdcard(),
                                     info.getName(), info.getJbState(),
                                     info.getDwmc(), info.getCzmc());
                         }
@@ -167,7 +167,7 @@ public class Query extends CommandWithHelp {
 
         static void printInfo(CbxxRequest.Cbxx info) {
             println("个人信息:");
-            format("%s %s %s %s %s %s %s\n", info.getName(), info.getIdcard(),
+            printf("%s %s %s %s %s %s %s\n", info.getName(), info.getIdcard(),
                     info.getJbState(), info.getJbKind(), info.getAgency(),
                     info.getCzName(), info.getDealDate());
         }
@@ -188,14 +188,14 @@ public class Query extends CommandWithHelp {
         static void printJfxxRecords(List<JfxxRecord> records, String message) {
             println(message);
 
-            format("%2s%3s%6s%5s%5s%5s%5s%5s%7s %s\n", "序号", "年度", "个人缴费",
+            printf("%2s%3s%6s%5s%5s%5s%5s%5s%7s %s\n", "序号", "年度", "个人缴费",
                     "省级补贴", "市级补贴", "县级补贴", "政府代缴", "集体补助", "社保经办机构", "划拨时间");
 
             var i = 1;
             for (var r : records) {
                 String t = r instanceof JfxxTotalRecord ? ""
                         : String.valueOf(i++);
-                format("%3s %s\n", t, formatRecord(r));
+                printf("%3s %s\n", t, formatRecord(r));
             }
         }
 

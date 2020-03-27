@@ -10,7 +10,7 @@ public class Fields {
     /**
      * 参保状态
      */
-    public static class CbState extends JsonField {
+    public static class CBState extends JsonField {
         @Override
         public String getName() {
             switch (value) {
@@ -31,7 +31,7 @@ public class Fields {
     /**
      * 缴费状态
      */
-    public static class JfState extends JsonField {
+    public static class JFState extends JsonField {
         @Override
         public String getName() {
             switch (value) {
@@ -50,10 +50,10 @@ public class Fields {
     /**
      * 居保状态
      */
-    public interface JbState {
-        public CbState getCbState();
+    public interface JBState {
+        public CBState getCbState();
 
-        public JfState getJfState();
+        public JFState getJfState();
 
         default public String getJbState() {
             var jfState = getJfState().getValue();
@@ -92,7 +92,7 @@ public class Fields {
         }
     }
 
-    public static class JbKind extends JsonField {
+    public static class JBKind extends JsonField {
         @Override
         public String getName() {
             switch (value) {

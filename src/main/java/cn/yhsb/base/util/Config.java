@@ -11,7 +11,8 @@ import java.util.Properties;
 public class Config {
     static Properties configures = new Properties();
     static {
-        try (var input = new InputStreamReader(Files.newInputStream(Paths.get("config.properties")),
+        try (var input = new InputStreamReader(
+                Files.newInputStream(Paths.get("config.properties")),
                 Charset.forName("UTF-8"))) {
             configures.load(input);
         } catch (Exception ex) {
@@ -61,7 +62,8 @@ public class Config {
         } else {
             var len = subKeys.length;
             for (var i = 1; i < len; i++) {
-                subKey = String.join(hyphenString, Arrays.copyOf(subKeys, len - i));
+                subKey = String.join(hyphenString,
+                        Arrays.copyOf(subKeys, len - i));
                 subKey = String.join(hyphenString, subKey, wildcardString);
                 if (map.containsKey(subKey)) {
                     return map.get(subKey);

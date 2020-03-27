@@ -3,10 +3,10 @@ package cn.yhsb.cjb.request;
 import com.google.common.base.Strings;
 import com.google.gson.annotations.SerializedName;
 
-import cn.yhsb.cjb.request.Fields.CbState;
-import cn.yhsb.cjb.request.Fields.JbKind;
-import cn.yhsb.cjb.request.Fields.JbState;
-import cn.yhsb.cjb.request.Fields.JfState;
+import cn.yhsb.cjb.request.Fields.CBState;
+import cn.yhsb.cjb.request.Fields.JBKind;
+import cn.yhsb.cjb.request.Fields.JBState;
+import cn.yhsb.cjb.request.Fields.JFState;
 import cn.yhsb.cjb.service.CustomRequest;
 import cn.yhsb.cjb.service.Data;
 
@@ -22,7 +22,7 @@ public class CbxxRequest extends CustomRequest {
         this.idcard = idcard;
     }
 
-    public static class Cbxx extends Data implements JbState {
+    public static class Cbxx extends Data implements JBState {
         /** 个人编号 */
         @SerializedName("aac001")
         int pid;
@@ -38,10 +38,10 @@ public class CbxxRequest extends CustomRequest {
         String birthDay;
 
         @SerializedName("aac008")
-        CbState cbState;
+        CBState cbState;
 
         @SerializedName("aac031")
-        JfState jfState;
+        JFState jfState;
 
         /** 参保时间*/
         @SerializedName("aac049")
@@ -49,7 +49,7 @@ public class CbxxRequest extends CustomRequest {
 
         /** 参保身份编码*/
         @SerializedName("aac066")
-        JbKind jbKind;
+        JBKind jbKind;
 
         /** 社保机构*/
         @SerializedName("aaa129")
@@ -72,12 +72,12 @@ public class CbxxRequest extends CustomRequest {
         String csName;
 
         @Override
-        public CbState getCbState() {
+        public CBState getCbState() {
             return cbState;
         }
 
         @Override
-        public JfState getJfState() {
+        public JFState getJfState() {
             return jfState;
         }
 
@@ -93,7 +93,7 @@ public class CbxxRequest extends CustomRequest {
             return name;
         }
 
-        public JbKind getJbKind() {
+        public JBKind getJbKind() {
             return jbKind;
         }
 

@@ -1,9 +1,9 @@
 package cn.yhsb.cjb.request;
 
 import com.google.gson.annotations.SerializedName;
-import cn.yhsb.cjb.request.Fields.CbState;
-import cn.yhsb.cjb.request.Fields.JbState;
-import cn.yhsb.cjb.request.Fields.JfState;
+import cn.yhsb.cjb.request.Fields.CBState;
+import cn.yhsb.cjb.request.Fields.JBState;
+import cn.yhsb.cjb.request.Fields.JFState;
 import cn.yhsb.cjb.service.Data;
 import cn.yhsb.cjb.service.PageRequest;
 
@@ -44,7 +44,7 @@ public class GrinfoRequest extends PageRequest {
         this.idcard = idcard;
     }
 
-    public static class Grinfo extends Data implements JbState {
+    public static class Grinfo extends Data implements JBState {
         /** 个人编号 */
         @SerializedName("aac001")
         int grbh;
@@ -61,7 +61,7 @@ public class GrinfoRequest extends PageRequest {
 
         /** 参保状态 */
         @SerializedName("aac008")
-        CbState cbState;
+        CBState cbState;
 
         /** 户口所在地 */
         @SerializedName("aac010")
@@ -69,7 +69,7 @@ public class GrinfoRequest extends PageRequest {
 
         /** 缴费状态 */
         @SerializedName("aac031")
-        JfState jfState;
+        JFState jfState;
 
         @SerializedName("aae005")
         String phone;
@@ -108,7 +108,7 @@ public class GrinfoRequest extends PageRequest {
             return birthday;
         }
 
-        public CbState getCbState() {
+        public CBState getCbState() {
             return cbState;
         }
 
@@ -116,7 +116,7 @@ public class GrinfoRequest extends PageRequest {
             return hkszd;
         }
 
-        public JfState getJfState() {
+        public JFState getJfState() {
             return jfState;
         }
 

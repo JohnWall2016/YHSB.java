@@ -11,7 +11,7 @@ public class IO {
         return System.out;
     }
 
-    public static PrintStream format(String format, Object ... args) {
+    public static PrintStream printf(String format, Object ... args) {
         return System.out.format(format, args);
     }
 }

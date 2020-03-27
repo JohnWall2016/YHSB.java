@@ -2,6 +2,10 @@ package cn.yhsb.cjb.application;
 
 import cn.yhsb.base.util.CommandWithHelp;
 import cn.yhsb.base.util.DateTime;
+import cn.yhsb.cjb.service.Session;
+import cn.yhsb.cjb.request.CbshRequest;
+import cn.yhsb.cjb.request.CbshRequest.Cbsh;
+import cn.yhsb.cjb.service.Result;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Parameters;
@@ -35,6 +39,18 @@ public class Audit extends CommandWithHelp {
         }
         println(span);
 
+        Result<Cbsh> result = null;
+        try (var session = Session.autoLoginUser002()) {
+            session.sendService(new CbshRequest(start, end));
+            result = session.getResult(Cbsh.class);
+        }
 
+        if (result != null) {
+            printf("共计 %d 条\n", result.getData().size());
+
+            for (var cbsh: result.getData()) {
+                printf("%s %s %s\n", cbsh.getIdcard(), cbsh.getName(), cbsh.getBirthDay());
+            }
+        }
     }
 }
